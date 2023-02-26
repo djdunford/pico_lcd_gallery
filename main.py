@@ -1,5 +1,5 @@
 from machine import Pin,SPI,PWM
-from LCD_1inch8 import LCD_1inch8
+from lcd import LCD_1inch8
 import framebuf
 # import time
 import utime
