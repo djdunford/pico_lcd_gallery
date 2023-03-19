@@ -166,6 +166,24 @@ Resources:
         Comment: !Sub "rewrite sub-directory path with trailing /${IndexDocument}"
         Runtime: cloudfront-js-1.0
 
+  CachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Comment: Minimal caching
+        DefaultTTL: 5
+        MinTTL: 5
+        MaxTTL: 5
+        Name: minimal
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingGzip: false
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: none
+
   PictureDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -191,10 +209,7 @@ Resources:
             - HEAD
             - OPTIONS
           TargetOriginId: bucketOrigin
-          ForwardedValues:
-            QueryString: 'false'
-            Cookies:
-              Forward: none
+          CachePolicyId: !Ref CachePolicy
           ViewerProtocolPolicy: redirect-to-https
           FunctionAssociations:
             - EventType: viewer-request
