@@ -3,38 +3,15 @@ import lcd
 import time
 import os
 import machine
-import network
-import urequests
 from display_utils import read_bmp_to_buffer
-from wifi_secrets import networks
+from wifi_utils import wlan_connect
 
 BL = 13
 
-try:
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
-    if not wlan.isconnected():
-        for net in networks:
-            wlan.connect(net['ssid'], net['psk'])
-            print(f"Waiting for connection {net['ssid']}...")
-            for retry in range(10):
-                if wlan.isconnected():
-                    break
-                time.sleep(0.5)
-            if wlan.isconnected():
-                print('Connected')
-                break
-    print(wlan.ifconfig())
-
-except OSError as e:
-    print(f"Exception during wifi connection {e}")
-
-r = urequests.get("http://www.google.com")
-print(r.content)
-r.close()
-
 if __name__ == "__main__":
-    
+
+    wlan = wlan_connect()
+
     try:
         # Set up the LCD
         pwm = PWM(Pin(BL))
