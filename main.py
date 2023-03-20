@@ -53,7 +53,4 @@ if __name__ == "__main__":
                 time.sleep(5)
 
     except KeyboardInterrupt as e:
-        if wlan.isconnected():
-            wlan.disconnect()
-        if wlan.active():
-            wlan.active(False)
+        wlan_disconnect()

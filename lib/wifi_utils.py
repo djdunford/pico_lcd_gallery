@@ -25,3 +25,17 @@ def wlan_connect():
     except OSError as e:
         print(f"Exception during wifi connection {e}")
         exit(1)
+
+
+def wlan_disconnect():
+
+    try:
+        wlan = network.WLAN(network.STA_IF)
+        if wlan.isconnected():
+            wlan.disconnect()
+        if wlan.active():
+            wlan.active(False)
+
+    except OSError as e:
+        print(f"Exception during wifi connection {e}")
+        exit(1)
