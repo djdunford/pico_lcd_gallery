@@ -2,13 +2,39 @@ from machine import Pin, PWM
 import lcd
 import time
 import gc
-from urllib.urequest import urlopen
 import json
+import uasyncio
+from urllib.urequest import urlopen
 from display_utils import read_bmp_to_buffer
 from wifi_utils import wlan_connect, wlan_disconnect
 
 BL = 13
 button = Pin(16, Pin.IN, Pin.PULL_UP)
+
+
+async def display_images(image_list):
+
+    while True:
+        for image in image_list:
+            print("Loading " + image["key"])
+
+            lcd_display.fill(0x0000)
+
+            with open(image["key"], "rb") as input_stream:
+                read_bmp_to_buffer(lcd_display, input_stream)
+
+            print("Loaded")
+
+            lcd_display.show()
+
+            now = time.time()
+            flag = False
+            while time.time() < now + 2:
+                await uasyncio.sleep_ms(10)
+                if not flag and not button.value():
+                    print("Button Pressed")
+                    flag = True
+
 
 if __name__ == "__main__":
 
@@ -48,26 +74,9 @@ if __name__ == "__main__":
 
         wlan_disconnect()
         print('Displaying images')
-
-        while True:
-            for image in image_list:
-                print("Loading " + image["key"])
-
-                lcd_display.fill(0x0000)
-
-                with open(image["key"], "rb") as input_stream:
-                    read_bmp_to_buffer(lcd_display, input_stream)
-
-                print("Loaded")
-
-                lcd_display.show()
-
-                now = time.time()
-                flag = False
-                while time.time() < now + 2:
-                    if not flag and not button.value():
-                        print("Button Pressed")
-                        flag = True
+        uasyncio.run(display_images(image_list))
 
     except KeyboardInterrupt as e:
         wlan_disconnect()
+
+
