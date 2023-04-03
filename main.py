@@ -36,6 +36,11 @@ async def display_images(image_list):
                     flag = True
 
 
+async def main():
+    await uasyncio.create_task(display_images(image_list))
+    await uasyncio.sleep_ms(10000)
+
+
 if __name__ == "__main__":
 
     wlan = wlan_connect()
@@ -74,7 +79,7 @@ if __name__ == "__main__":
 
         wlan_disconnect()
         print('Displaying images')
-        uasyncio.run(display_images(image_list))
+        uasyncio.run(main())
 
     except KeyboardInterrupt as e:
         wlan_disconnect()
