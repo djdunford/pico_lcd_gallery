@@ -84,6 +84,9 @@ if __name__ == "__main__":
         wlan_disconnect()
         print('Displaying images')
         uasyncio.run(main())
+        print('Stopping')
 
     except KeyboardInterrupt as e:
-        wlan_disconnect()
+        print('INTERRUPTED')
+
+    wlan_disconnect()
