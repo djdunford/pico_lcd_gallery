@@ -13,7 +13,6 @@ button = Pin(16, Pin.IN, Pin.PULL_UP)
 
 
 async def display_images(image_list):
-
     while True:
         for image in image_list:
             print("Loading " + image["key"])
@@ -28,17 +27,22 @@ async def display_images(image_list):
             lcd_display.show()
 
             now = time.time()
-            flag = False
             while time.time() < now + 2:
                 await uasyncio.sleep_ms(10)
-                if not flag and not button.value():
-                    print("Button Pressed")
-                    flag = True
+
+
+async def cancel_button(task_to_stop: uasyncio.Task):
+    while True:
+        await uasyncio.sleep_ms(10)
+        if not button.value():
+            task_to_stop.cancel()
+            break
 
 
 async def main():
-    await uasyncio.create_task(display_images(image_list))
-    await uasyncio.sleep_ms(10000)
+    display_images_task = uasyncio.create_task(display_images(image_list))
+    await uasyncio.run(cancel_button(display_images_task))
+    print("CANCELLED")
 
 
 if __name__ == "__main__":
@@ -83,5 +87,3 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt as e:
         wlan_disconnect()
-
-
