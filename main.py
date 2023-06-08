@@ -1,6 +1,5 @@
 from machine import Pin, PWM
 import lcd
-import time
 import gc
 import json
 import uasyncio
@@ -26,14 +25,12 @@ async def display_images(image_list):
 
             lcd_display.show()
 
-            now = time.time()
-            while time.time() < now + 2:
-                await uasyncio.sleep_ms(10)
+            await uasyncio.sleep(2)
 
 
 async def cancel_button():
     while True:
-        await uasyncio.sleep_ms(10)
+        await uasyncio.sleep(0)
         if not button.value():
             break
     return True

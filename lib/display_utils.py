@@ -33,7 +33,7 @@ async def read_bmp_to_buffer(lcd_display, file_handle):
     print("Offset " + str(offset))
 
     for row_i in range(0, reader.get_height()):
-        await uasyncio.sleep_ms(1)
+        await uasyncio.sleep(0)
         row = reader.get_row(row_i)
         for col_i, color in enumerate(row):
             lcd_display.pixel(
