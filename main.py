@@ -16,8 +16,6 @@ async def display_images(image_list):
         for image in image_list:
             print("Loading " + image["key"])
 
-            # lcd_display.fill(0x0000)
-
             with open(image["key"], "rb") as input_stream:
                 await read_bmp_to_buffer(lcd_display, input_stream)
 
