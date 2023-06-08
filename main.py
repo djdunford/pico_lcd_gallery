@@ -31,17 +31,19 @@ async def display_images(image_list):
                 await uasyncio.sleep_ms(10)
 
 
-async def cancel_button(task_to_stop: uasyncio.Task):
+async def cancel_button():
     while True:
         await uasyncio.sleep_ms(10)
         if not button.value():
-            task_to_stop.cancel()
             break
+    return True
 
 
 async def main():
     display_images_task = uasyncio.create_task(display_images(image_list))
-    await uasyncio.run(cancel_button(display_images_task))
+    uasyncio.run(cancel_button())
+    print("CANCELLING...")
+    display_images_task.cancel()
     print("CANCELLED")
 
 
