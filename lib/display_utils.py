@@ -1,4 +1,5 @@
 import bmp_file_reader as bmpr
+import uasyncio
 
 
 def to_color(red, green, blue):
@@ -25,13 +26,14 @@ def to_color(red, green, blue):
     return color
 
 
-def read_bmp_to_buffer(lcd_display, file_handle):
+async def read_bmp_to_buffer(lcd_display, file_handle):
     reader = bmpr.BMPFileReader(file_handle)
 
     offset = int((128 - reader.get_height()) / 2)
     print("Offset " + str(offset))
 
     for row_i in range(0, reader.get_height()):
+        await uasyncio.sleep_ms(1)
         row = reader.get_row(row_i)
         for col_i, color in enumerate(row):
             lcd_display.pixel(
