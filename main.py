@@ -36,7 +36,11 @@ async def cancel_button():
 
 async def main():
     display_images_task = uasyncio.create_task(display_images(image_list))
-    uasyncio.run(cancel_button())
+    try:
+        await uasyncio.wait_for(cancel_button(), 20)
+    except uasyncio.TimeoutError:
+        print("TIMEOUT")
+
     print("CANCELLING...")
     display_images_task.cancel()
     print("CANCELLED")
