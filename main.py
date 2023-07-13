@@ -1,4 +1,4 @@
-from machine import Pin, PWM
+from machine import Pin
 import lcd
 import gc
 import json
@@ -7,7 +7,6 @@ from urllib.urequest import urlopen
 from display_utils import read_bmp_to_buffer
 from wifi_utils import wlan_connect, wlan_disconnect
 
-BL = 13
 button = Pin(16, Pin.IN, Pin.PULL_UP)
 
 
@@ -37,7 +36,7 @@ async def cancel_button():
 async def main():
     display_images_task = uasyncio.create_task(display_images(image_list))
     try:
-        await uasyncio.wait_for(cancel_button(), 20)
+        await uasyncio.wait_for(cancel_button(), 180)
     except uasyncio.TimeoutError:
         print("TIMEOUT")
 
@@ -51,11 +50,8 @@ if __name__ == "__main__":
     wlan = wlan_connect()
 
     try:
-        pwm = PWM(Pin(BL))
-        pwm.freq(1000)
-        pwm.duty_u16(32768)  # max 65535
-
         lcd_display = lcd.LCD_1inch8()
+        lcd_display.set_brightness(60)
 
         lcd_display.fill(lcd_display.BLACK)
         lcd_display.text("Loading...", 2, 28, lcd_display.WHITE)

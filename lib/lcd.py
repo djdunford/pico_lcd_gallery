@@ -1,6 +1,7 @@
-from machine import Pin,SPI,PWM
+from machine import Pin, SPI, PWM
 import framebuf
 
+BL = 13
 DC = 8
 RST = 12
 MOSI = 11
@@ -14,7 +15,8 @@ class LCD_1inch8(framebuf.FrameBuffer):
         
         self.cs = Pin(CS,Pin.OUT)
         self.rst = Pin(RST,Pin.OUT)
-        
+        self.pwm = PWM(Pin(BL))
+
         self.cs(1)
         self.spi = SPI(1)
         self.spi = SPI(1,1000_000)
@@ -175,3 +177,7 @@ class LCD_1inch8(framebuf.FrameBuffer):
         self.cs(0)
         self.spi.write(self.buffer)
         self.cs(1)
+
+    def set_brightness(self, brightness=50):
+        self.pwm.freq(1000)
+        self.pwm.duty_u16(brightness*65535 // 100)  # max 65535
