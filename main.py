@@ -45,6 +45,7 @@ async def main():
     print("CANCELLED")
 
 
+
 if __name__ == "__main__":
 
     wlan = wlan_connect()
@@ -74,8 +75,10 @@ if __name__ == "__main__":
             r = urlopen(f'https://d3pkoikmm0xava.cloudfront.net/images/{image["key"]}')
 
             with open(image["key"], 'wb') as fd:
+                gc.collect()
                 fd.write(r.read())
                 r.close()
+                fd.close()
             print('Done')
 
         wlan_disconnect()
@@ -85,5 +88,14 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt as e:
         print('INTERRUPTED')
+        gc.collect()
+        print(f'Free memory: {gc.mem_free()}')
+
+    # turn off display
+    print("TURNING DISPLAY OFF")
+    lcd_display.off()
+    print("DISPLAY OFF")
+    # await uasyncio.wait_for(cancel_button(), 20)
+    # lcd_display.on()
 
     wlan_disconnect()

@@ -13,8 +13,8 @@ class LCD_1inch8(framebuf.FrameBuffer):
         self.width = 160
         self.height = 128
         
-        self.cs = Pin(CS,Pin.OUT)
-        self.rst = Pin(RST,Pin.OUT)
+        self.cs = Pin(CS, Pin.OUT)
+        self.rst = Pin(RST, Pin.OUT)
         self.pwm = PWM(Pin(BL))
 
         self.cs(1)
@@ -50,7 +50,7 @@ class LCD_1inch8(framebuf.FrameBuffer):
         self.cs(1)
 
     def init_display(self):
-        """Initialize dispaly"""  
+        """Initialize display"""
         self.rst(1)
         self.rst(0)
         self.rst(1)
@@ -181,3 +181,9 @@ class LCD_1inch8(framebuf.FrameBuffer):
     def set_brightness(self, brightness=50):
         self.pwm.freq(1000)
         self.pwm.duty_u16(brightness*65535 // 100)  # max 65535
+
+    def off(self):
+        self.rst(0)
+
+    def on(self):
+        self.rst(1)
