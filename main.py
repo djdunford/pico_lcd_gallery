@@ -3,11 +3,13 @@ import lcd
 import gc
 import json
 import uasyncio
+import lowpower
 from urllib.urequest import urlopen
 from display_utils import read_bmp_to_buffer
 from wifi_utils import wlan_connect, wlan_disconnect
 
 button = Pin(16, Pin.IN, Pin.PULL_UP)
+DORMANT_PIN = 15
 
 
 async def display_images(image_list):
@@ -45,18 +47,20 @@ async def main():
     print("CANCELLED")
 
 
-
 if __name__ == "__main__":
 
-    wlan = wlan_connect()
-
+    lcd_display = lcd.LCD_1inch8()
     try:
-        lcd_display = lcd.LCD_1inch8()
         lcd_display.set_brightness(60)
 
         lcd_display.fill(lcd_display.BLACK)
-        lcd_display.text("Loading...", 2, 28, lcd_display.WHITE)
+        lcd_display.text("Connecting...", 2, 28, lcd_display.WHITE)
+        lcd_display.show()
 
+        wlan = wlan_connect()
+
+        lcd_display.fill(lcd_display.BLACK)
+        lcd_display.text("Loading...", 2, 28, lcd_display.WHITE)
         lcd_display.show()
 
         r = urlopen("https://d3pkoikmm0xava.cloudfront.net/list/list.json")
@@ -84,18 +88,25 @@ if __name__ == "__main__":
         wlan_disconnect()
         print('Displaying images')
         uasyncio.run(main())
-        print('Stopping')
+        print('STOPPING')
+
+        # turn off display
+        print("POWERING DOWN")
+        lcd_display.set_brightness(0)
+        print("DISPLAY OFF")
+        wlan_disconnect()
+        print("WLAN OFF")
+        print("GOING DORMANT")
+        lowpower.dormant_until_pin(DORMANT_PIN)
+        print("OUT OF DORMANT")
 
     except KeyboardInterrupt as e:
         print('INTERRUPTED')
         gc.collect()
         print(f'Free memory: {gc.mem_free()}')
 
-    # turn off display
-    print("TURNING DISPLAY OFF")
-    lcd_display.off()
-    print("DISPLAY OFF")
-    # await uasyncio.wait_for(cancel_button(), 20)
-    # lcd_display.on()
+        lcd_display.set_brightness(60)
+        lcd_display.fill(lcd_display.BLACK)
+        lcd_display.text("INTERRUPTED", 2, 28, lcd_display.WHITE)
+        lcd_display.show()
 
-    wlan_disconnect()
