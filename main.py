@@ -4,6 +4,7 @@ import gc
 import json
 import uasyncio
 import lowpower
+import os
 from urllib.urequest import urlopen
 from display_utils import read_bmp_to_buffer
 from wifi_utils import wlan_connect, wlan_disconnect
@@ -52,6 +53,24 @@ if __name__ == "__main__":
     lcd_display = lcd.LCD_1inch8()
     try:
         lcd_display.set_brightness(60)
+
+        lcd_display.fill(lcd_display.BLACK)
+        lcd_display.text("Initialising...", 2, 28, lcd_display.WHITE)
+        lcd_display.show()
+
+        for file in os.listdir("/"):
+            if file.endswith(".bmp"):
+                print(f"Deleting {file}")
+                os.remove(file)
+                print(f"Deleted {file}")
+
+        print("Confirming...")
+        for file in os.listdir("/"):
+            if file.endswith(".bmp"):
+                print(f"Deleting {file}")
+                os.remove(file)
+                print(f"Deleted {file}")
+
 
         lcd_display.fill(lcd_display.BLACK)
         lcd_display.text("Connecting...", 2, 28, lcd_display.WHITE)
@@ -109,4 +128,3 @@ if __name__ == "__main__":
         lcd_display.fill(lcd_display.BLACK)
         lcd_display.text("INTERRUPTED", 2, 28, lcd_display.WHITE)
         lcd_display.show()
-
