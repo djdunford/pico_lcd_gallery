@@ -300,7 +300,7 @@ Resources:
         Name: 'access-logs'
         Description: 'Gzip logs delivered by Amazon CloudFront partitioned'
         TableType: EXTERNAL_TABLE
-#        Parameters: { "skip.header.line.count": "2" }
+        Parameters: { "skip.header.line.count": "2" }
         StorageDescriptor:
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
           OutputFormat: IgnoreKeyTextOutputFormat
