@@ -2,8 +2,16 @@
 
 ## Converting images to bmp
 
+Images downloaded from the web are sometimes in `.webp` format - to convert to `.png`:
+
 ```bash
-% dwebp Meet_the_Ponies_main_crop.webp -o meet.png
-% convert -define bmp:format=bmp3 -compress none -alpha off -resize 160x128 meet.png mlpmeet.bmp
-% convert -define bmp:format=bmp3 -compress none -alpha off -resize 160x128 4962723b02c5b89d3907cc7e5c21cb37368523bf.jpg mlp6.bmp
+% dwebp downloaded.webp -o input.png
 ```
+
+To scale the image, convert to `.bmp`, turn off compression and transparency:
+
+```bash
+% convert -define bmp:format=bmp3 -compress none -alpha off -resize 160x128 input.png output.bmp
+```
+
+The resulting `.bmp` image can then be uploaded to the bucket and referenced by the `list.json` file.
